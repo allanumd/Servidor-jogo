@@ -96,6 +96,21 @@ body.h2 .btn{background:#0003;border-color:#fff5}body.h2 #fire{background:#ff2b2
 #nms{inset:0;pointer-events:none}
 .nm{position:absolute;left:0;top:0;transform-origin:50% 100%;font-size:13px;font-weight:800;color:#fff;background:#0007;padding:1px 7px;border-radius:9px;white-space:nowrap;text-shadow:0 0 3px #000,0 0 3px #000;will-change:transform;display:none}
 .nm.me{color:#ffd23c}.nm.bot{color:#cfd6df}
+
+/* CHAT GLOBAL */
+#chatToggle{position:fixed;right:12px;top:46%;z-index:30;pointer-events:auto;border:2px solid #fff8;border-radius:50%;width:48px;height:48px;background:#171b24eF;color:#fff;font-size:23px;box-shadow:0 3px 12px #0008}
+#globalChat{position:fixed;right:10px;top:50%;transform:translateY(-50%);width:min(290px,78vw);height:min(390px,58vh);z-index:29;display:none;flex-direction:column;gap:7px;padding:10px;box-sizing:border-box;background:#10141df2;border:1px solid #ffffff55;border-radius:13px;box-shadow:0 5px 24px #000b;pointer-events:auto;backdrop-filter:blur(8px)}
+#globalChat.open{display:flex}
+#gcHead{display:flex;align-items:center;justify-content:space-between;font-weight:900;font-size:14px}
+#gcStatus{font-size:10px;color:#ffd166;font-weight:600}
+#gcMessages{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:6px;padding:5px;background:#0005;border-radius:8px;touch-action:pan-y;user-select:text;-webkit-user-select:text}
+.gcMsg{font-size:12px;line-height:1.35;overflow-wrap:anywhere;color:#eee}
+.gcMsg b{color:#ffbd65;margin-right:4px}
+#gcForm{display:flex;gap:5px}
+#gcInput{min-width:0;flex:1;width:100%;box-sizing:border-box;background:#252b37;color:#fff;border:1px solid #697386;border-radius:8px;padding:9px;font-size:13px;user-select:text;-webkit-user-select:text}
+#gcSend{background:#ff5a3c;color:white;border:0;border-radius:8px;padding:0 12px;font-weight:900}
+@media(max-width:600px){#globalChat{right:7px;top:auto;bottom:82px;transform:none;height:min(42vh,320px);width:min(270px,76vw)}#chatToggle{top:auto;bottom:18px;right:14px}}
+
 </style></head><body>
 <div id="lobby" class="ui"><h1>FOGO ROYALE 3D<small style="display:block;font-size:13px;letter-spacing:7px;color:#fff;text-align:center">MULTIPLAYER</small></h1><div style="display:flex;gap:8px;position:static"><span class="chip" id="net">🌐 Online: ao clicar em JOGAR</span><span class="chip" id="acc" style="pointer-events:auto">👤 Offline · entrar</span></div><div id="wl"></div>
 <div id="lr"><span class="chip" id="coins">🪙 0</span><button class="sb" id="bro">🎡 ROLETA</button><button class="sb" id="bsk">🎨 SKINS</button><button class="sb" id="bhd">📱 HUD</button></div><button id="go">JOGAR</button></div>
@@ -123,6 +138,40 @@ body.h2 .btn{background:#0003;border-color:#fff5}body.h2 #fire{background:#ff2b2
 <input id="ap" type="password" autocomplete="current-password" maxlength="64" placeholder="Senha">
 <input id="ap2" type="password" autocomplete="new-password" maxlength="64" placeholder="Repita a senha" style="display:none">
 <div id="amsg"></div><button class="sb big" id="aok">ENTRAR</button><button class="x" id="aoff">Jogar offline (sem conta)</button></div></div>
+<script>
+/* Fallback de interface: funciona mesmo se a inicialização 3D falhar antes dos eventos principais. */
+(function () {
+  var auth = document.getElementById('auth');
+  var off = document.getElementById('aoff');
+  var msg = document.getElementById('amsg');
+  if (off) off.addEventListener('click', function () {
+    if (auth) auth.style.display = 'none';
+    var acc = document.getElementById('acc');
+    if (acc) acc.textContent = '👤 Offline · entrar';
+  });
+  window.addEventListener('error', function (e) {
+    if (msg) {
+      msg.textContent = 'Erro ao iniciar o jogo: ' + (e.message || 'falha no JavaScript');
+      msg.className = '';
+    }
+  });
+  window.addEventListener('unhandledrejection', function () {
+    if (msg) {
+      msg.textContent = 'Erro ao carregar uma função do jogo. Atualize a página e tente novamente.';
+      msg.className = '';
+    }
+  });
+})();
+</script>
+
+<!-- CHAT GLOBAL: interface pronta; o servidor precisa retransmitir as mensagens entre todas as salas. -->
+<button id="chatToggle" type="button" aria-label="Abrir chat global">💬</button>
+<section id="globalChat" aria-label="Chat global">
+ <div id="gcHead"><span>🌐 CHAT GLOBAL <small id="gcStatus">Conectando...</small></span><button id="gcClose" class="x" type="button">✕</button></div>
+ <div id="gcMessages" aria-live="polite"><div class="gcMsg">💬 Bem-vindo! As mensagens aparecerão aqui.</div></div>
+ <form id="gcForm"><input id="gcInput" maxlength="240" autocomplete="off" placeholder="Digite uma mensagem..."/><button id="gcSend" type="submit">➤</button></form>
+</section>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
 <script>
@@ -150,48 +199,27 @@ try{const d=JSON.parse(localStorage.getItem('fr_save')||'null');if(d){coins=d.c|
 if(eq.char&&!CH[eq.char])delete eq.char;delete owned['char:cueca'];
 function save(){try{localStorage.setItem('fr_save',JSON.stringify({c:coins,o:owned,e:eq,h:hcfg}))}catch(e){}}
 const clamp=(v,a,b)=>M.max(a,M.min(b,v)),angd=(a,b)=>((a-b+PI)%(2*PI)+2*PI)%(2*PI)-PI;
-function gun(t,sk){const w=WP[t],th=sk&&TH[sk],g=new W.Group(),m=new W.MeshLambertMaterial({color:th?th.c:w.c,emissive:th&&th.e?th.e:0}),k=new W.MeshLambertMaterial({color:th?th.k:0x111111});
-const a=(sx,sy,sz,x,y,z,mt)=>{const b=new W.Mesh(new W.BoxGeometry(sx,sy,sz),mt||m);b.position.set(x,y,z);g.add(b)};
-a(.08,.12,w.len,0,0,-w.len/2);a(.04,.04,w.len*.5,0,.02,-w.len*1.25,k);a(.07,.2,.1,0,-.14,-w.len*.45,k);a(.06,.16,.08,0,-.12,-.05);a(.07,.14,.3,0,-.02,.15);
-if(t=='sniper')a(.06,.06,.45,0,.1,-.4,k);else a(.03,.04,.06,0,.08,-w.len*.9,k);return g}
+function gun(t,sk){const w=WP[t],th=sk&&TH[sk],g=new W.Group(),m=new W.MeshLambertMaterial({color:th?th.c:w.c,emissive:th&&th.e?th.e:0}),k=new W.MeshLambertMaterial({color:th?th.k:0x17191d}),metal=new W.MeshLambertMaterial({color:0x454b52}),grip=new W.MeshLambertMaterial({color:0x24272b});
+// Armas com corpo arredondado, cano cilíndrico e empunhadura curva.
+const cyl=(r1,r2,len,x,y,z,mt,seg=12)=>{const b=new W.Mesh(new W.CylinderGeometry(r1,r2,len,seg),mt);b.rotation.x=PI/2;b.position.set(x,y,z);g.add(b);return b};
+const ball=(sx,sy,sz,x,y,z,mt)=>{const b=new W.Mesh(new W.SphereGeometry(1,16,12),mt);b.scale.set(sx,sy,sz);b.position.set(x,y,z);g.add(b);return b};
+const rounded=(sx,sy,sz,x,y,z,mt)=>{ball(sx,sy,sz,x,y,z,mt)};
+// Caixa principal e cobertura superior
+rounded(.075,.095,w.len*.34,0,0,-w.len*.38,m);cyl(.025,.025,w.len*.78,0,.012,-w.len*.91,metal,10);
+ball(.035,.035,.045,0,.012,-w.len*1.28,k);
+// Cano e boca
+cyl(.025,.025,w.len*.22,0,.012,-w.len*1.12,metal,12);cyl(.034,.034,.055,0,.012,-w.len*1.25,k,12);
+// Empunhadura e carregador
+rounded(.045,.105,.055,0,-.105,-w.len*.28,grip);rounded(.045,.105,.055,0,-.12,-w.len*.57,k);
+// Coronha arredondada
+rounded(.065,.07,.18,0,-.015,.12,k);
+// Mira superior
+if(t==='sniper'){cyl(.035,.035,.32,0,.115,-.48,k,12);ball(.05,.05,.07,0,.115,-.48,metal)}else{rounded(.025,.025,.045,0,.09,-w.len*.78,metal)}
+return g}
 // lobby
 ls.add(new W.HemisphereLight(0xffffff,0x444444,1.2));const ld=new W.DirectionalLight(0xffffff,.8);ld.position.set(2,3,3);ls.add(ld);ls.background=new W.Color(0x1a1d26);
 lcam.position.set(0,.3,2.6);let lg=new W.Group();ls.add(lg);
 function pick(t){sel=t;ls.remove(lg);lg=new W.Group();const g=gun(t,eq[t]);g.scale.setScalar(1.6);g.position.z=WP[t].len*.8;lg.add(g);lg.position.set(spo?-.9:0,.2,0);ls.add(lg);if(lch)setGun({m:lch},t,eq[t]);
 document.querySelectorAll('.wc').forEach(c=>c.classList.toggle('on',c.dataset.t==t))}
 let sel='ar';
-for(const t in WP){const w=WP[t],d=document.createElement('div');d.className='wc';d.dataset.t=t;d.innerHTML=`<b>${w.n}</b>Dano ${w.dmg*w.pel>99?w.dmg+'x'+w.pel:w.dmg}<br>${w.mag} balas`;d.onclick=()=>pick(t);$('wl').appendChild(d)}
-pick('ar');
-// mundo
-const obs=[];let ents=[],loots=[],P,playing=false,tm=0,assist=.6,built=0,zone=58,zw;
-let yaw=0,pitch=.1,firing=false,pull=0,ads=false,running=false,jx=0,jy=0,jumpReq=false,crouch=false,hsT=0,hmT=0,vgT=0,tsT=0;
-function box(w,h,d,x,z,col){const m=new W.Mesh(new W.BoxGeometry(w,h,d),new W.MeshLambertMaterial({color:col}));m.position.set(x,h/2,z);scene.add(m);obs.push({x,z,hw:w/2,hd:d/2,h})}
-function world(){scene.background=new W.Color(0x8ec9ee);scene.fog=new W.Fog(0x8ec9ee,28,105);
-scene.add(new W.HemisphereLight(0xffffff,0x556644,.95));const s=new W.DirectionalLight(0xfff2d0,.8);s.position.set(40,80,20);scene.add(s);
-const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d');
-for(let i=0;i<64;i++)for(let j=0;j<64;j++){const g=(90+R()*40)|0;x.fillStyle=`rgb(${g-30},${g+30},${g-50})`;x.fillRect(i,j,1,1)}
-const t=new W.CanvasTexture(c);t.wrapS=t.wrapT=W.RepeatWrapping;t.repeat.set(38,38);t.magFilter=W.NearestFilter;
-const gr=new W.Mesh(new W.PlaneGeometry(190,190),new W.MeshLambertMaterial({map:t}));gr.rotation.x=-PI/2;scene.add(gr);
-for(let i=0;i<14;i++){const g=(120+R()*80)|0;box(5+R()*6,3+R()*4,5+R()*6,(R()-.5)*104,(R()-.5)*104,g*65793)}
-for(let i=0;i<18;i++)box(.9,.9,.9,(R()-.5)*112,(R()-.5)*112,0x8a6a3a);
-const tg=new W.CylinderGeometry(0,1.6,4.5,6),tm2=new W.MeshLambertMaterial({color:0x2f6b2f});
-for(let i=0;i<44;i++){const x=(R()-.5)*118,z=(R()-.5)*118;box(.6,3,.6,x,z,0x5a3b22);const l=new W.Mesh(tg,tm2);l.position.set(x,5,z);scene.add(l)}
-zw=new W.Mesh(new W.CylinderGeometry(1,1,40,48,1,true),new W.MeshBasicMaterial({color:0xff2200,transparent:true,opacity:.18,side:W.DoubleSide,fog:false}));zw.position.y=20;scene.add(zw);
-for(let i=0;i<14;i++){const l=new W.Line(new W.BufferGeometry().setFromPoints([new W.Vector3(),new W.Vector3()]),new W.LineBasicMaterial({color:0xffe080}));l.visible=false;l.frustumCulled=false;scene.add(l);tr.push(l)}
-for(let i=0;i<80;i++){const m=new W.Mesh(new W.BoxGeometry(.1,.1,.1),new W.MeshBasicMaterial({color:0xffaa33}));m.visible=false;m.v=new W.Vector3();m.life=0;scene.add(m);pa.push(m)}}
-const tr=[],pa=[];
-function tracer(a,bx,by,bz){const l=tr.find(x=>!x.visible)||tr[0],p=l.geometry.attributes.position;p.setXYZ(0,a.x,a.y,a.z);p.setXYZ(1,bx,by,bz);p.needsUpdate=true;l.visible=true;l.life=.07}
-function burst(x,y,z,col,n,sp){let k=0;for(const p of pa){if(p.visible)continue;p.visible=true;p.position.set(x,y,z);p.material.color.setHex(col);p.v.set((R()-.5)*sp,R()*sp,(R()-.5)*sp);p.life=.4+R()*.4;if(++k>=n)break}}
-function free(x,z){return!obs.some(o=>M.abs(x-o.x)<o.hw+2&&M.abs(z-o.z)<o.hd+2)}
-// ===== personagem (corpo arredondado + skin) =====
-const cvs=(w,h)=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c},TXC={},GC={};
-function geo(k,f){return GC[k]||(GC[k]=f())}
-function lathe(p,sg){return new W.LatheGeometry(p.map(a=>new W.Vector2(a[0],a[1])),sg||14)}
-const TP=[.2,.195,.19,.195,.205,.222,.236,.242,.235,.19,.05];
-const LG=[[.07,-.8],[.078,-.7],[.088,-.6],[.095,-.5],[.092,-.4],[.1,-.3],[.108,-.2],[.112,-.1],[.108,0]];
-const SLV=[[.062,-.26],[.066,-.195],[.07,-.13],[.072,-.065],[.07,0]],FA=[[.042,-.56],[.046,-.485],[.05,-.41],[.055,-.335],[.058,-.26]];
-function torsoR(y){const t=clamp((y-.9)/.72,0,1)*10,i=M.min(9,t|0),f=t-i;return TP[i]*(1-f)+TP[i+1]*f}
-function txTorso(){if(TXC.t)return TXC.t;const c=cvs(512,256),x=c.getContext('2d');x.fillStyle='#121216';x.fillRect(0,0,512,256);
-x.fillStyle='#f2eff9';x.beginPath();[[258,256],[262,238],[276,226],[274,206],[292,192],[296,170],[312,156],[308,134],[326,120],[330,98],[346,84],[352,120],[356,170],[354,256]].forEach((p,i)=>i?x.lineTo(p[0],p[1]):x.moveTo(p[0],p[1]));x.closePath();x.fill();
-for(let i=0;i<46;i++)x.fillRect(268+R()*84,70+R()*180,1.5+R()*3,1.5+R()*3);
-x.strokeStyle='#121216';x.line
+for(const t in WP){const w=WP[t],
