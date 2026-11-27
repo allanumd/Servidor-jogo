@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<title>Fogo Royale 3D Multiplayer</title>
+<title>Fogo Royale 3D</title>
 <style>
 html,body{margin:0;height:100%;overflow:hidden;background:#000;touch-action:none;user-select:none;-webkit-user-select:none;font-family:system-ui,sans-serif;color:#fff}
 canvas{position:fixed;inset:0;width:100%;height:100%}
@@ -85,38 +85,11 @@ body.h2 .bar{background:#0005;height:6px}
 body.h2 .btn{background:#0003;border-color:#fff5}body.h2 #fire{background:#ff2b2b33}body.h2 .btn.on{background:#ff5a3c99}
 #end{inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:#000c;pointer-events:auto}
 #end h2{font-size:34px;margin:0;position:static}#end p{position:static;margin:0}
-#auth{display:flex;align-items:flex-start;justify-content:center;background:#0b0d12f2;overflow-y:auto;touch-action:pan-y;z-index:9}
-#auth .pn2{width:min(92%,340px);margin:auto;gap:10px}
-#auth h2{margin:0;text-align:center;color:#ff5a3c;letter-spacing:2px;font-size:22px}
-#auth h2 small{display:block;color:#fff;font-size:12px;letter-spacing:7px;margin-top:2px}
-#auth .seg .tb{flex:1}
-#auth input{box-sizing:border-box;padding:12px;border-radius:10px;border:2px solid #555;background:#1d222c;color:#fff;font-size:16px;-webkit-user-select:text;user-select:text}
-#auth input:focus{outline:0;border-color:#ff5a3c}
-#amsg{min-height:18px;font-size:13px;font-weight:700;color:#ff6b6b;text-align:center}#amsg.ok{color:#3ddc6a}
-#nms{inset:0;pointer-events:none}
-.nm{position:absolute;left:0;top:0;transform-origin:50% 100%;font-size:13px;font-weight:800;color:#fff;background:#0007;padding:1px 7px;border-radius:9px;white-space:nowrap;text-shadow:0 0 3px #000,0 0 3px #000;will-change:transform;display:none}
-.nm.me{color:#ffd23c}.nm.bot{color:#cfd6df}
-
-/* CHAT GLOBAL */
-#chatToggle{position:fixed;right:12px;top:46%;z-index:30;pointer-events:auto;border:2px solid #fff8;border-radius:50%;width:48px;height:48px;background:#171b24eF;color:#fff;font-size:23px;box-shadow:0 3px 12px #0008}
-#globalChat{position:fixed;right:10px;top:50%;transform:translateY(-50%);width:min(290px,78vw);height:min(390px,58vh);z-index:29;display:none;flex-direction:column;gap:7px;padding:10px;box-sizing:border-box;background:#10141df2;border:1px solid #ffffff55;border-radius:13px;box-shadow:0 5px 24px #000b;pointer-events:auto;backdrop-filter:blur(8px)}
-#globalChat.open{display:flex}
-#gcHead{display:flex;align-items:center;justify-content:space-between;font-weight:900;font-size:14px}
-#gcStatus{font-size:10px;color:#ffd166;font-weight:600}
-#gcMessages{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:6px;padding:5px;background:#0005;border-radius:8px;touch-action:pan-y;user-select:text;-webkit-user-select:text}
-.gcMsg{font-size:12px;line-height:1.35;overflow-wrap:anywhere;color:#eee}
-.gcMsg b{color:#ffbd65;margin-right:4px}
-#gcForm{display:flex;gap:5px}
-#gcInput{min-width:0;flex:1;width:100%;box-sizing:border-box;background:#252b37;color:#fff;border:1px solid #697386;border-radius:8px;padding:9px;font-size:13px;user-select:text;-webkit-user-select:text}
-#gcSend{background:#ff5a3c;color:white;border:0;border-radius:8px;padding:0 12px;font-weight:900}
-@media(max-width:600px){#globalChat{right:7px;top:auto;bottom:82px;transform:none;height:min(42vh,320px);width:min(270px,76vw)}#chatToggle{top:auto;bottom:18px;right:14px}}
-
 </style></head><body>
-<div id="lobby" class="ui"><h1>FOGO ROYALE 3D<small style="display:block;font-size:13px;letter-spacing:7px;color:#fff;text-align:center">MULTIPLAYER</small></h1><div style="display:flex;gap:8px;position:static"><span class="chip" id="net">🌐 Online: ao clicar em JOGAR</span><span class="chip" id="acc" style="pointer-events:auto">👤 Offline · entrar</span></div><div id="wl"></div>
+<div id="lobby" class="ui"><h1>FOGO ROYALE 3D</h1><div id="wl"></div>
 <div id="lr"><span class="chip" id="coins">🪙 0</span><button class="sb" id="bro">🎡 ROLETA</button><button class="sb" id="bsk">🎨 SKINS</button><button class="sb" id="bhd">📱 HUD</button></div><button id="go">JOGAR</button></div>
 <div id="hud" class="ui" style="display:none">
-<div id="nms"></div>
-<div id="top"><span class="chip">👥 <span id="al">16</span></span><span class="chip">☠ <span id="kl">0</span></span><span class="chip" id="snd" style="pointer-events:auto">🔊</span><span class="chip" id="nt">📴</span></div>
+<div id="top"><span class="chip">👥 <span id="al">16</span></span><span class="chip">☠ <span id="kl">0</span></span><span class="chip" id="snd" style="pointer-events:auto">🔊</span></div>
 <div id="zt"></div><div id="bars"><div class="bar"><i id="hp" style="background:#3ddc6a"></i></div><div class="bar"><i id="ar" style="background:#4aa8ff;width:0"></i></div></div>
 <div id="am"><small id="wn"></small><span id="ma"></span></div>
 <div id="cross"></div><div id="hm">✕</div><div id="hs">HEADSHOT</div><div id="toast"></div><div id="vig"></div>
@@ -132,48 +105,7 @@ body.h2 .btn{background:#0003;border-color:#fff5}body.h2 #fire{background:#ff2b2
 <div class="ri"><h3>🎡 EVENTO · ROLETA DE SKINS</h3><small>Prêmio: skin aleatória de arma. Ganhe 🪙 jogando partidas!</small><span class="chip" id="rcoin"></span>
 <button class="sb big" id="spin">GIRAR</button><div id="rres"></div><button class="x" id="rlx">FECHAR</button></div></div></div>
 <div id="end" class="ui"><h2 id="et"></h2><p id="es"></p><button id="again">VOLTAR AO LOBBY</button></div>
-<div id="auth" class="ov" style="display:flex"><div class="pn2"><h2>FOGO ROYALE 3D<small>MULTIPLAYER</small></h2>
-<div class="seg"><button class="tb on" id="tlg">Entrar</button><button class="tb" id="tcd">Criar conta</button></div>
-<input id="au" type="text" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" maxlength="16" placeholder="Nome de usuário">
-<input id="ap" type="password" autocomplete="current-password" maxlength="64" placeholder="Senha">
-<input id="ap2" type="password" autocomplete="new-password" maxlength="64" placeholder="Repita a senha" style="display:none">
-<div id="amsg"></div><button class="sb big" id="aok">ENTRAR</button><button class="x" id="aoff">Jogar offline (sem conta)</button></div></div>
-<script>
-/* Fallback de interface: funciona mesmo se a inicialização 3D falhar antes dos eventos principais. */
-(function () {
-  var auth = document.getElementById('auth');
-  var off = document.getElementById('aoff');
-  var msg = document.getElementById('amsg');
-  if (off) off.addEventListener('click', function () {
-    if (auth) auth.style.display = 'none';
-    var acc = document.getElementById('acc');
-    if (acc) acc.textContent = '👤 Offline · entrar';
-  });
-  window.addEventListener('error', function (e) {
-    if (msg) {
-      msg.textContent = 'Erro ao iniciar o jogo: ' + (e.message || 'falha no JavaScript');
-      msg.className = '';
-    }
-  });
-  window.addEventListener('unhandledrejection', function () {
-    if (msg) {
-      msg.textContent = 'Erro ao carregar uma função do jogo. Atualize a página e tente novamente.';
-      msg.className = '';
-    }
-  });
-})();
-</script>
-
-<!-- CHAT GLOBAL: interface pronta; o servidor precisa retransmitir as mensagens entre todas as salas. -->
-<button id="chatToggle" type="button" aria-label="Abrir chat global">💬</button>
-<section id="globalChat" aria-label="Chat global">
- <div id="gcHead"><span>🌐 CHAT GLOBAL <small id="gcStatus">Conectando...</small></span><button id="gcClose" class="x" type="button">✕</button></div>
- <div id="gcMessages" aria-live="polite"><div class="gcMsg">💬 Bem-vindo! As mensagens aparecerão aqui.</div></div>
- <form id="gcForm"><input id="gcInput" maxlength="240" autocomplete="off" placeholder="Digite uma mensagem..."/><button id="gcSend" type="submit">➤</button></form>
-</section>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
 <script>
 const W=THREE,$=id=>document.getElementById(id),R=Math.random,PI=Math.PI,M=Math;
 const WP={ar:{n:'Fuzil AR',dmg:22,rof:.11,mag:30,spr:.012,pel:1,c:0x4a5a35,len:.9},
@@ -199,27 +131,66 @@ try{const d=JSON.parse(localStorage.getItem('fr_save')||'null');if(d){coins=d.c|
 if(eq.char&&!CH[eq.char])delete eq.char;delete owned['char:cueca'];
 function save(){try{localStorage.setItem('fr_save',JSON.stringify({c:coins,o:owned,e:eq,h:hcfg}))}catch(e){}}
 const clamp=(v,a,b)=>M.max(a,M.min(b,v)),angd=(a,b)=>((a-b+PI)%(2*PI)+2*PI)%(2*PI)-PI;
-function gun(t,sk){const w=WP[t],th=sk&&TH[sk],g=new W.Group(),m=new W.MeshLambertMaterial({color:th?th.c:w.c,emissive:th&&th.e?th.e:0}),k=new W.MeshLambertMaterial({color:th?th.k:0x17191d}),metal=new W.MeshLambertMaterial({color:0x454b52}),grip=new W.MeshLambertMaterial({color:0x24272b});
-// Armas com corpo arredondado, cano cilíndrico e empunhadura curva.
-const cyl=(r1,r2,len,x,y,z,mt,seg=12)=>{const b=new W.Mesh(new W.CylinderGeometry(r1,r2,len,seg),mt);b.rotation.x=PI/2;b.position.set(x,y,z);g.add(b);return b};
-const ball=(sx,sy,sz,x,y,z,mt)=>{const b=new W.Mesh(new W.SphereGeometry(1,16,12),mt);b.scale.set(sx,sy,sz);b.position.set(x,y,z);g.add(b);return b};
-const rounded=(sx,sy,sz,x,y,z,mt)=>{ball(sx,sy,sz,x,y,z,mt)};
-// Caixa principal e cobertura superior
-rounded(.075,.095,w.len*.34,0,0,-w.len*.38,m);cyl(.025,.025,w.len*.78,0,.012,-w.len*.91,metal,10);
-ball(.035,.035,.045,0,.012,-w.len*1.28,k);
-// Cano e boca
-cyl(.025,.025,w.len*.22,0,.012,-w.len*1.12,metal,12);cyl(.034,.034,.055,0,.012,-w.len*1.25,k,12);
-// Empunhadura e carregador
-rounded(.045,.105,.055,0,-.105,-w.len*.28,grip);rounded(.045,.105,.055,0,-.12,-w.len*.57,k);
-// Coronha arredondada
-rounded(.065,.07,.18,0,-.015,.12,k);
-// Mira superior
-if(t==='sniper'){cyl(.035,.035,.32,0,.115,-.48,k,12);ball(.05,.05,.07,0,.115,-.48,metal)}else{rounded(.025,.025,.045,0,.09,-w.len*.78,metal)}
-return g}
+function gun(t,sk){const w=WP[t],th=sk&&TH[sk],g=new W.Group(),m=new W.MeshLambertMaterial({color:th?th.c:w.c,emissive:th&&th.e?th.e:0}),k=new W.MeshLambertMaterial({color:th?th.k:0x111111});
+const a=(sx,sy,sz,x,y,z,mt)=>{const b=new W.Mesh(new W.BoxGeometry(sx,sy,sz),mt||m);b.position.set(x,y,z);g.add(b)};
+a(.08,.12,w.len,0,0,-w.len/2);a(.04,.04,w.len*.5,0,.02,-w.len*1.25,k);a(.07,.2,.1,0,-.14,-w.len*.45,k);a(.06,.16,.08,0,-.12,-.05);a(.07,.14,.3,0,-.02,.15);
+if(t=='sniper')a(.06,.06,.45,0,.1,-.4,k);else a(.03,.04,.06,0,.08,-w.len*.9,k);return g}
 // lobby
 ls.add(new W.HemisphereLight(0xffffff,0x444444,1.2));const ld=new W.DirectionalLight(0xffffff,.8);ld.position.set(2,3,3);ls.add(ld);ls.background=new W.Color(0x1a1d26);
 lcam.position.set(0,.3,2.6);let lg=new W.Group();ls.add(lg);
 function pick(t){sel=t;ls.remove(lg);lg=new W.Group();const g=gun(t,eq[t]);g.scale.setScalar(1.6);g.position.z=WP[t].len*.8;lg.add(g);lg.position.set(spo?-.9:0,.2,0);ls.add(lg);if(lch)setGun({m:lch},t,eq[t]);
 document.querySelectorAll('.wc').forEach(c=>c.classList.toggle('on',c.dataset.t==t))}
 let sel='ar';
-for(const t in WP){const w=WP[t],
+for(const t in WP){const w=WP[t],d=document.createElement('div');d.className='wc';d.dataset.t=t;d.innerHTML=`<b>${w.n}</b>Dano ${w.dmg*w.pel>99?w.dmg+'x'+w.pel:w.dmg}<br>${w.mag} balas`;d.onclick=()=>pick(t);$('wl').appendChild(d)}
+pick('ar');
+// mundo
+const obs=[];let ents=[],loots=[],P,playing=false,tm=0,assist=.6,built=0,zone=58,zw;
+let yaw=0,pitch=.1,firing=false,pull=0,ads=false,running=false,jx=0,jy=0,jumpReq=false,crouch=false,hsT=0,hmT=0,vgT=0,tsT=0;
+function box(w,h,d,x,z,col){const m=new W.Mesh(new W.BoxGeometry(w,h,d),new W.MeshLambertMaterial({color:col}));m.position.set(x,h/2,z);scene.add(m);obs.push({x,z,hw:w/2,hd:d/2,h})}
+function world(){scene.background=new W.Color(0x8ec9ee);scene.fog=new W.Fog(0x8ec9ee,28,105);
+scene.add(new W.HemisphereLight(0xffffff,0x556644,.95));const s=new W.DirectionalLight(0xfff2d0,.8);s.position.set(40,80,20);scene.add(s);
+const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d');
+for(let i=0;i<64;i++)for(let j=0;j<64;j++){const g=(90+R()*40)|0;x.fillStyle=`rgb(${g-30},${g+30},${g-50})`;x.fillRect(i,j,1,1)}
+const t=new W.CanvasTexture(c);t.wrapS=t.wrapT=W.RepeatWrapping;t.repeat.set(38,38);t.magFilter=W.NearestFilter;
+const gr=new W.Mesh(new W.PlaneGeometry(190,190),new W.MeshLambertMaterial({map:t}));gr.rotation.x=-PI/2;scene.add(gr);
+for(let i=0;i<14;i++){const g=(120+R()*80)|0;box(5+R()*6,3+R()*4,5+R()*6,(R()-.5)*104,(R()-.5)*104,g*65793)}
+for(let i=0;i<18;i++)box(.9,.9,.9,(R()-.5)*112,(R()-.5)*112,0x8a6a3a);
+const tg=new W.CylinderGeometry(0,1.6,4.5,6),tm2=new W.MeshLambertMaterial({color:0x2f6b2f});
+for(let i=0;i<44;i++){const x=(R()-.5)*118,z=(R()-.5)*118;box(.6,3,.6,x,z,0x5a3b22);const l=new W.Mesh(tg,tm2);l.position.set(x,5,z);scene.add(l)}
+zw=new W.Mesh(new W.CylinderGeometry(1,1,40,48,1,true),new W.MeshBasicMaterial({color:0xff2200,transparent:true,opacity:.18,side:W.DoubleSide,fog:false}));zw.position.y=20;scene.add(zw);
+for(let i=0;i<14;i++){const l=new W.Line(new W.BufferGeometry().setFromPoints([new W.Vector3(),new W.Vector3()]),new W.LineBasicMaterial({color:0xffe080}));l.visible=false;l.frustumCulled=false;scene.add(l);tr.push(l)}
+for(let i=0;i<80;i++){const m=new W.Mesh(new W.BoxGeometry(.1,.1,.1),new W.MeshBasicMaterial({color:0xffaa33}));m.visible=false;m.v=new W.Vector3();m.life=0;scene.add(m);pa.push(m)}}
+const tr=[],pa=[];
+function tracer(a,bx,by,bz){const l=tr.find(x=>!x.visible)||tr[0],p=l.geometry.attributes.position;p.setXYZ(0,a.x,a.y,a.z);p.setXYZ(1,bx,by,bz);p.needsUpdate=true;l.visible=true;l.life=.07}
+function burst(x,y,z,col,n,sp){let k=0;for(const p of pa){if(p.visible)continue;p.visible=true;p.position.set(x,y,z);p.material.color.setHex(col);p.v.set((R()-.5)*sp,R()*sp,(R()-.5)*sp);p.life=.4+R()*.4;if(++k>=n)break}}
+function free(x,z){return!obs.some(o=>M.abs(x-o.x)<o.hw+2&&M.abs(z-o.z)<o.hd+2)}
+// ===== personagem (corpo arredondado + skin) =====
+const cvs=(w,h)=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c},TXC={},GC={};
+function geo(k,f){return GC[k]||(GC[k]=f())}
+function lathe(p,sg){return new W.LatheGeometry(p.map(a=>new W.Vector2(a[0],a[1])),sg||14)}
+const TP=[.2,.195,.19,.195,.205,.222,.236,.242,.235,.19,.05];
+const LG=[[.07,-.8],[.078,-.7],[.088,-.6],[.095,-.5],[.092,-.4],[.1,-.3],[.108,-.2],[.112,-.1],[.108,0]];
+const SLV=[[.062,-.26],[.066,-.195],[.07,-.13],[.072,-.065],[.07,0]],FA=[[.042,-.56],[.046,-.485],[.05,-.41],[.055,-.335],[.058,-.26]];
+function torsoR(y){const t=clamp((y-.9)/.72,0,1)*10,i=M.min(9,t|0),f=t-i;return TP[i]*(1-f)+TP[i+1]*f}
+function txTorso(){if(TXC.t)return TXC.t;const c=cvs(512,256),x=c.getContext('2d');x.fillStyle='#121216';x.fillRect(0,0,512,256);
+x.fillStyle='#f2eff9';x.beginPath();[[258,256],[262,238],[276,226],[274,206],[292,192],[296,170],[312,156],[308,134],[326,120],[330,98],[346,84],[352,120],[356,170],[354,256]].forEach((p,i)=>i?x.lineTo(p[0],p[1]):x.moveTo(p[0],p[1]));x.closePath();x.fill();
+for(let i=0;i<46;i++)x.fillRect(268+R()*84,70+R()*180,1.5+R()*3,1.5+R()*3);
+x.strokeStyle='#121216';x.lineWidth=2;for(let i=0;i<8;i++){const a=300+R()*40,b=130+R()*110;x.beginPath();x.moveTo(a,b);x.lineTo(a+10+R()*14,b-10-R()*14);x.stroke()}
+x.strokeStyle='#fff';x.lineWidth=3;x.lineJoin='round';x.beginPath();x.moveTo(278,78);x.lineTo(280,58);x.lineTo(289,68);x.lineTo(297,54);x.lineTo(305,68);x.lineTo(314,58);x.lineTo(316,78);x.closePath();x.stroke();
+x.beginPath();x.moveTo(278,83);x.lineTo(316,83);x.stroke();
+return TXC.t=new W.CanvasTexture(c)}
+function txLeg(left){const k=left?'l':'r';if(TXC[k])return TXC[k];const c=cvs(256,256),x=c.getContext('2d');x.fillStyle='#16161c';x.fillRect(0,0,256,256);
+x.strokeStyle='#0f0f14';x.lineWidth=2;for(let i=0;i<10;i++){const a=R()*256,b=90+R()*140;x.beginPath();x.moveTo(a,b);x.lineTo(a+R()*10-5,b+14+R()*20);x.stroke()}
+x.fillStyle='#0d0d11';x.fillRect(0,232,256,24);
+x.fillStyle='#202028';x.fillRect(122,0,12,96);x.fillStyle='#9aa3ad';x.fillRect(120,70,16,12);x.fillStyle='#16161c';x.fillRect(124,73,8,6);
+const px=left?192:64;x.fillStyle='#1d1d25';x.fillRect(px-26,34,52,64);x.strokeStyle='#2c2c36';x.lineWidth=3;x.strokeRect(px-26,34,52,64);x.fillStyle='#262630';x.fillRect(px-26,34,52,18);x.fillStyle='#8a8f98';x.beginPath();x.arc(px,52,3.5,0,7);x.fill();
+if(left){x.strokeStyle=x.fillStyle='#f1eef8';x.lineCap='round';x.lineJoin='round';
+const pts=[[px+2,226],[px+14,206],[px-6,186],[px+14,166],[px-4,146],[px+10,128]];
+for(let i=0;i<pts.length-1;i++){x.lineWidth=12-i*2;x.beginPath();x.moveTo(pts[i][0],pts[i][1]);x.lineTo(pts[i+1][0],pts[i+1][1]);x.stroke()}
+for(let i=0;i<pts.length-1;i++){const p=pts[i],sg=i%2?1:-1;x.beginPath();x.moveTo(p[0]+sg*5,p[1]);x.lineTo(p[0]+sg*15,p[1]-8);x.lineTo(p[0]+sg*5,p[1]-9);x.closePath();x.fill()}
+x.beginPath();x.moveTo(px-10,236);x.lineTo(px-4,222);x.lineTo(px+12,226);x.lineTo(px+16,238);x.closePath();x.fill();x.fillStyle='#16161c';x.beginPath();x.arc(px+3,229,2,0,7);x.fill()}
+return TXC[k]=new W.CanvasTexture(c)}
+function human(col,fit,sk){const cue=fit&&sk!='classico',g=new W.Group(),dbl=W.DoubleSide,L=c=>new W.MeshLambertMaterial(c),
+skin=L({color:cue?0x553624:fit?0xdca67c:0xe0b090}),skD=L({color:0x553624,side:dbl}),blk=L({color:0x0b0b0f}),
+shirt=cue?skD:fit?L({map:txTorso(),side:dbl}):L({color:col,side:dbl}),slv=cue?skD:fit?L({color:0x121216,side:dbl}):shirt,
+pt=L({color:cu
